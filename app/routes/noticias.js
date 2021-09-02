@@ -1,20 +1,12 @@
-module.exports = function(app){
+module.exports = function(application){
+    
+    application.get('/noticias', function(req,res){
 
-    app.get('/noticias', function(req, res){
-        var mysql = require('mysql');
+        var connection = application.config.dbConnection();
+        var noticiasModel = application.app.models.noticiasModel;
 
-        var connection = mysql.createConnection({
-            host: 'localhost',
-            user: 'root',
-            password: '1027',
-            database: 'portal_noticias'
+        noticiasModel.getNoticias(connection, function(_error, result){
+            res.render('noticias/noticias', {noticias : result});
         });
-
-        connection.query('select * from noticias', function(error, result){
-            res.send(result);
-
-        });
-
-        //res.render("noticias/noticias");
     });
 };
